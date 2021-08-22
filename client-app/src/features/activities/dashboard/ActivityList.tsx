@@ -1,16 +1,13 @@
+import { observer } from 'mobx-react-lite';
 import React, { useState } from 'react'
 import { SyntheticEvent } from 'react';
 import { Button, Item, ItemDescription, ItemExtra, ItemGroup, ItemHeader, ItemMeta, Label, Segment } from 'semantic-ui-react'
-import { Activity } from '../../../app/models/activity'
+import { useStore } from '../../../app/stores/store';
 
-interface Props {
-    activities: Activity[];
-    selectActivity: (id: string) => void;
-    deleteActivity: (id: string) => void;
-    submitting: boolean;
-}
+const ActivityList = observer(() => {
+    const {activityStore} = useStore();
+    const {deleteActivity, activities, loading} = activityStore;
 
-export const ActivityList = ({activities, selectActivity, deleteActivity, submitting}: Props) => {
     const [target, setTarget] = useState('');
 
     const handleActivityDelete = (e: SyntheticEvent<HTMLButtonElement>, id: string) => {
@@ -32,13 +29,13 @@ export const ActivityList = ({activities, selectActivity, deleteActivity, submit
                             </ItemDescription>
                             <ItemExtra>
                                 <Button 
-                                    onClick={() => selectActivity(activity.id)} 
+                                    onClick={() => activityStore.selectActivity(activity.id)} 
                                     floated='right' 
                                     content='View' 
                                     color='blue' 
                                 />
                                 <Button 
-                                    loading={submitting && target === activity.id} 
+                                    loading={loading && target === activity.id} 
                                     name={activity.id} 
                                     onClick={(e) => handleActivityDelete(e, activity.id)} 
                                     floated='right' 
@@ -52,5 +49,7 @@ export const ActivityList = ({activities, selectActivity, deleteActivity, submit
                 ))}
             </ItemGroup>
         </Segment>
-    )
-}
+    )}
+);
+
+export default ActivityList;
