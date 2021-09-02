@@ -5,7 +5,7 @@ import { useStore } from '../../../app/stores/store';
 
 const ActivityForm = observer(() => {
     const {activityStore} = useStore();
-    const {selectedActivity, closeForm, createActivity, updateActivity, loading} = activityStore;
+    const {selectedActivity, createActivity, updateActivity, loading} = activityStore;
     
     const initialState = selectedActivity ?? {
         id: '',
@@ -38,7 +38,7 @@ const ActivityForm = observer(() => {
                 <FormInput placeholder='City' value={activity.city} name='city' onChange={handleInputChange} />
                 <FormInput placeholder='Venue' value={activity.venue} name='venue' onChange={handleInputChange} />
                 <Button loading={loading} floated='right' positive type='submit' content='Submit' />
-                <Button onClick={closeForm} floated='right' type='button' content='Cancel' />
+                <Button floated='right' type='button' content='Cancel' />
             </Form>
         </Segment>
     )
