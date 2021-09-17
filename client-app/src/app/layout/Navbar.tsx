@@ -13,6 +13,9 @@ export const Navbar = () => {
                 <MenuItem as={NavLink} to='/activities' name='Activities'>
                     Activities
                 </MenuItem>
+                <MenuItem as={NavLink} to='/errors' name='Errors'>
+                    Errors
+                </MenuItem>
                 <MenuItem header>
                     <Button as={NavLink} to='/createActivity' positive content='Create Activity' />
                 </MenuItem>
