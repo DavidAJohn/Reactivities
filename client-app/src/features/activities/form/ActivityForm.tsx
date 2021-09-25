@@ -2,11 +2,12 @@ import { observer } from 'mobx-react-lite';
 import React, { ChangeEvent, useState } from 'react'
 import { useEffect } from 'react';
 import { Link, useHistory, useParams } from 'react-router-dom';
-import { Button, FormTextArea, Segment } from 'semantic-ui-react'
+import { Button, FormField, FormTextArea, Label, Segment } from 'semantic-ui-react'
 import { LoadingComponent } from '../../../app/layout/LoadingComponent';
 import { useStore } from '../../../app/stores/store';
 import { v4 as uuid } from 'uuid';
-import { Formik, Form, Field } from 'formik';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
 
 const ActivityForm = observer(() => {
     const history = useHistory();
@@ -22,6 +23,10 @@ const ActivityForm = observer(() => {
         date: '',
         city: '',
         venue: ''
+    });
+
+    const validationSchema = Yup.object({
+        title: Yup.string().required('The actvitiy title is required')
     });
 
     useEffect(() => {
@@ -51,10 +56,18 @@ const ActivityForm = observer(() => {
 
     return (
         <Segment clearing>
-            <Formik enableReinitialize initialValues={activity} onSubmit={values => console.log(values)}>
+            <Formik 
+                validationSchema={validationSchema} 
+                enableReinitialize 
+                initialValues={activity} 
+                onSubmit={values => console.log(values)}
+                >
                 {({ handleSubmit }) => (
                     <Form className="ui form" onSubmit={handleSubmit} autoComplete='off'>
-                        <Field placeholder='Title' name='title'  />
+                        <FormField>
+                            <Field placeholder='Title' name='title'></Field>
+                            <ErrorMessage name='title' render={error => <Label basic color='red' content={error} />} />
+                        </FormField>
                         <Field placeholder='Description' name='description'  />
                         <Field placeholder='Category' name='category'  />
                         <Field type='date' placeholder='Date' name='date'  />
