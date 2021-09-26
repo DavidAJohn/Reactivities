@@ -2,13 +2,14 @@ import { observer } from 'mobx-react-lite';
 import React, { ChangeEvent, useState } from 'react'
 import { useEffect } from 'react';
 import { Link, useHistory, useParams } from 'react-router-dom';
-import { Button, FormField, FormTextArea, Label, Segment } from 'semantic-ui-react'
+import { Button, FormField, Label, Segment } from 'semantic-ui-react'
 import { LoadingComponent } from '../../../app/layout/LoadingComponent';
 import { useStore } from '../../../app/stores/store';
 import { v4 as uuid } from 'uuid';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { TextInput } from '../../../app/common/form/TextInput';
+import { TextArea } from '../../../app/common/form/TextArea';
 
 const ActivityForm = observer(() => {
     const history = useHistory();
@@ -71,7 +72,7 @@ const ActivityForm = observer(() => {
                 {({ handleSubmit }) => (
                     <Form className="ui form" onSubmit={handleSubmit} autoComplete='off'>
                         <TextInput placeholder='Title' name='title'  />
-                        <TextInput placeholder='Description' name='description'  />
+                        <TextArea rows={5} placeholder='Description' name='description'  />
                         <TextInput placeholder='Category' name='category'  />
                         <TextInput placeholder='Date' name='date'  />
                         <TextInput placeholder='City' name='city' />
