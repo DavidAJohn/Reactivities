@@ -1,4 +1,5 @@
 using API.Middleware;
+using API.Services;
 using Application.Activities;
 using Application.Core;
 using Domain;
@@ -58,6 +59,7 @@ namespace API
                 .AddSignInManager<SignInManager<AppUser>>();
 
             services.AddAuthentication();
+            services.AddScoped<TokenService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
