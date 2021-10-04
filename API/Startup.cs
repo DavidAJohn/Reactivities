@@ -68,7 +68,8 @@ namespace API
                 .AddSignInManager<SignInManager<AppUser>>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(opt => {
+                .AddJwtBearer(opt => 
+                {
                     opt.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuerSigningKey = true,
