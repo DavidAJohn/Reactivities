@@ -81,6 +81,16 @@ namespace API
                     };
                 });
                 
+            services.AddAuthorization(opt =>
+            {
+                opt.AddPolicy("IsActivityHost", policy =>
+                {
+                    policy.Requirements.Add(new IsHostRequirement());
+                });
+            });
+
+            services.AddTransient<IAuthorizationHandler, IsHostRequirementHandler>();
+
             services.AddScoped<TokenService>();
             services.AddScoped<IUserAccessor, UserAccessor>();
         }
