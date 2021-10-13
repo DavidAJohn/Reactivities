@@ -29,7 +29,7 @@ export const ActivityDetails = observer(() => {
                 <ActivityDetailsChat />
             </Grid.Column>
             <Grid.Column width={6}>
-                <ActivityDetailsSidebar attendees={activity.attendees!} />
+                <ActivityDetailsSidebar activity={activity} />
             </Grid.Column>
         </Grid>
     )}
