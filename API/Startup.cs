@@ -94,6 +94,7 @@ namespace API
 
             services.AddScoped<TokenService>();
             services.AddScoped<IUserAccessor, UserAccessor>();
+            services.AddScoped<IPhotoAccessor, PhotoAccessor>();
             services.Configure<CloudinarySettings>(Configuration.GetSection("Cloudinary"));
         }
 
