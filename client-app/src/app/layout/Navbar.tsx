@@ -27,7 +27,7 @@ export const Navbar = observer(() => {
                     <Image src={user?.image || 'assets/user.png'} avatar spaced='right' />
                     <Dropdown pointing='top left' text={user?.displayName}>
                         <DropdownMenu>
-                            <DropdownItem as={Link} to={`/profile/${user?.username}`} text='My Profile' icon='user'></DropdownItem>
+                            <DropdownItem as={Link} to={`/profiles/${user?.username}`} text='My Profile' icon='user'></DropdownItem>
                             <DropdownItem onClick={logout} text='Log Out' icon='power'></DropdownItem>
                         </DropdownMenu>
                     </Dropdown>
