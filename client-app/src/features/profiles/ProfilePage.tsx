@@ -22,9 +22,11 @@ export const ProfilePage = observer(() => {
         <Grid>
             <GridColumn width={16}>
                 {profile &&
-                <ProfileHeader profile={profile} />
+                <>
+                    <ProfileHeader profile={profile} />
+                    <ProfileContent profile={profile} />
+                </>
                 }
-                <ProfileContent />
             </GridColumn>
         </Grid>
     )
