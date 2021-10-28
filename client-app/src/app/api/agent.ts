@@ -1,3 +1,4 @@
+import { Photo } from './../models/profile';
 import { UserFormValues } from './../models/user';
 import { history } from './../../index';
 import axios, { AxiosError, AxiosResponse } from "axios";
@@ -93,7 +94,15 @@ const Account = {
 }
 
 const Profiles = {
-    get: (username: string) => requests.get<Profile>(`/profiles/${username}`)
+    get: (username: string) => requests.get<Profile>(`/profiles/${username}`),
+    uploadPhoto: (file: Blob) => {
+        let formData = new FormData();
+        formData.append('File', file);
+
+        return axios.post<Photo>('photos', formData, {
+            headers: {'Content-type': 'multipart/form-data'}
+        });
+    }
 }
 
 const agent = {
