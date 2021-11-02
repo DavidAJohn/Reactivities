@@ -26,7 +26,7 @@ export const ActivityDetails = observer(() => {
             <Grid.Column width={10}>
                 <ActivityDetailsHeader activity={activity} />
                 <ActivityDetailsInfo activity={activity}  />
-                <ActivityDetailsChat />
+                <ActivityDetailsChat activityId={activity.id} />
             </Grid.Column>
             <Grid.Column width={6}>
                 <ActivityDetailsSidebar activity={activity} />
