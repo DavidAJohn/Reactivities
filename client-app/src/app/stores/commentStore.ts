@@ -42,4 +42,14 @@ export default class CommentStore {
         this.stopHubConnection();
         this.comments = [];
     }
+
+    addComment = async (values: any) => {
+        values.activityId = store.activityStore.selectedActivity?.id;
+
+        try {
+            await this.hubConnection?.invoke('SendComment', values);
+        } catch (error) {
+            console.log(error);
+        }
+    }
 }
