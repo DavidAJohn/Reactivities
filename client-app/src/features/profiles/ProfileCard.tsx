@@ -25,7 +25,7 @@ export const ProfileCard = observer(({profile}: Props) => {
             </CardContent>
             <CardContent extra>
                 <Icon name='user' />
-                20 followers
+                {profile.followersCount} {profile.followersCount === 1 ? 'follower' : 'followers'}
             </CardContent>
         </Card>
     )
