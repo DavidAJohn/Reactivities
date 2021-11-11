@@ -1,25 +1,41 @@
 import { observer } from 'mobx-react-lite'
-import React, { useEffect } from 'react'
-import { Grid, GridColumn } from 'semantic-ui-react'
+import React, { useEffect, useState } from 'react'
+import { Button, Grid, GridColumn } from 'semantic-ui-react'
 import { LoadingComponent } from '../../../app/layout/LoadingComponent'
+import { PagingParams } from '../../../app/models/pagination'
 import { useStore } from '../../../app/stores/store'
 import { ActivityFilters } from './ActivityFilters'
 import ActivityList from './ActivityList'
 
 export default observer(function ActivityDashboard() {
     const {activityStore} = useStore();
-    const {loadActivities, activityRegistry} = activityStore;
+    const {loadActivities, activityRegistry, setPagingParams, pagination} = activityStore;
+    const [loadingNext, setLoadingNext] = useState(false);
+    
+    const handleGetNext = () => {
+        setLoadingNext(true);
+        setPagingParams(new PagingParams(pagination!.currentPage + 1));
+        loadActivities().then(() => setLoadingNext(false));
+    }
 
     useEffect(() => {
         if (activityRegistry.size <= 1) loadActivities();
     }, [activityRegistry.size, loadActivities])
     
-    if (activityStore.loadingInitial) return <LoadingComponent content='Loading activities...' />
+    if (activityStore.loadingInitial && !loadingNext) return <LoadingComponent content='Loading activities...' />
 
     return (
         <Grid>
             <GridColumn width='10'>
                 <ActivityList />
+                <Button 
+                    floated='right'
+                    content='More...'
+                    positive
+                    onClick={handleGetNext}
+                    loading={loadingNext}
+                    disabled={pagination?.totalPages === pagination?.currentPage}
+                />
             </GridColumn>
             <GridColumn width='6'>
                 <ActivityFilters />
