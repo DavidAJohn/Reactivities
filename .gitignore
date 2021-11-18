@@ -452,3 +452,4 @@ $RECYCLE.BIN/
 # custom
 appsettings.json
 *.db*
+**/wwwroot/**/*
