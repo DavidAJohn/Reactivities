@@ -97,7 +97,7 @@ namespace API
                     policy.AllowAnyMethod()
                         .AllowAnyHeader()
                         .AllowCredentials()
-                        .WithOrigins("http://localhost:3000");
+                        .WithOrigins(Configuration["Cors_Url"]);
                 });
             });
 
