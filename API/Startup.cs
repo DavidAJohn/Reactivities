@@ -97,6 +97,7 @@ namespace API
                     policy.AllowAnyMethod()
                         .AllowAnyHeader()
                         .AllowCredentials()
+                        .WithExposedHeaders("WWW-Authenticate", "Pagination")
                         .WithOrigins(Configuration["Cors_Url"]);
                 });
             });
