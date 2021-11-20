@@ -116,7 +116,9 @@ namespace API
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["TokenKey"])),
                         ValidateIssuer = false,
-                        ValidateAudience = false   
+                        ValidateAudience = false,
+                        ValidateLifetime = true,
+                        ClockSkew = TimeSpan.Zero
                     };
 
                     opt.Events = new JwtBearerEvents // SignalR auth
