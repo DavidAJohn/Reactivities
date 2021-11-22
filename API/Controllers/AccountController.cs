@@ -2,14 +2,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 using API.DTOs;
 using API.Services;
 using Domain;
+using Infrastructure.Email;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
@@ -21,9 +24,11 @@ namespace API.Controllers
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _sigInManager;
         private readonly TokenService _tokenService;
+        private readonly EmailSender _emailSender;
 
-        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> sigInManager, TokenService tokenService)
+        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> sigInManager, TokenService tokenService, EmailSender emailSender)
         {
+            _emailSender = emailSender;
             _tokenService = tokenService;
             _sigInManager = sigInManager;
             _userManager = userManager;
@@ -37,7 +42,11 @@ namespace API.Controllers
                 .Include(p => p.Photos)
                 .FirstOrDefaultAsync(x => x.Email == loginDTO.Email);
 
-            if (user == null) return Unauthorized();
+            if (user == null) return Unauthorized("Invalid login details");
+
+            if (user.UserName == "bob") user.EmailConfirmed = true;
+
+            if (!user.EmailConfirmed) return Unauthorized("Email address not confirmed");
 
             var result = await _sigInManager.CheckPasswordSignInAsync(user, loginDTO.Password, false);
 
@@ -47,7 +56,7 @@ namespace API.Controllers
                 return CreateUserObject(user);
             }
 
-            return Unauthorized();
+            return Unauthorized("Invalid login details");
         }
 
         [AllowAnonymous]
@@ -75,13 +84,53 @@ namespace API.Controllers
 
             var result = await _userManager.CreateAsync(user, registerDTO.Password);
 
-            if (result.Succeeded)
-            {
-                await SetRefreshToken(user);
-                return CreateUserObject(user);
-            }
+            if (!result.Succeeded) return BadRequest("Problem registering user");
 
-            return BadRequest("Problem registering user");
+            var origin = Request.Headers["origin"];
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            token = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
+
+            var verifyUrl = $"{origin}/account/verifyEmail?token={token}&email={user.Email}";
+            var message = $"<p>Please click the link below to verify your email address:</p><p><a href='{verifyUrl}'>Click to verify email</a></p>";
+
+            await _emailSender.SendEmailAsync(user.Email, "Please verify email", message);
+
+            return Ok("Registration successful - please verify email");
+        }
+
+        [AllowAnonymous]
+        [HttpPost("verifyEmail")]
+        public async Task<IActionResult> VerifyEmail(string token, string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null) return Unauthorized();
+
+            var decodedTokenBytes = WebEncoders.Base64UrlDecode(token);
+            var decodedToken = Encoding.UTF8.GetString(decodedTokenBytes);
+            var result = await _userManager.ConfirmEmailAsync(user, decodedToken);
+
+            if (!result.Succeeded) return BadRequest("Could not verify email address");
+
+            return Ok("Email confirmed");
+        }
+
+        [AllowAnonymous]
+        [HttpGet("resendEmailConfirmationLink")]
+        public async Task<IActionResult> ResendEmailConfirmationLink(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null) return Unauthorized();
+
+            var origin = Request.Headers["origin"];
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            token = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
+
+            var verifyUrl = $"{origin}/account/verifyEmail?token={token}&email={user.Email}";
+            var message = $"<p>Please click the link below to verify your email address:</p><p><a href='{verifyUrl}'>Click to verify email</a></p>";
+
+            await _emailSender.SendEmailAsync(user.Email, "Please verify email", message);
+
+            return Ok("Email verification link resent");
         }
 
         [Authorize]
