@@ -9,6 +9,7 @@ using Application.Core;
 using Application.Interfaces;
 using Domain;
 using FluentValidation.AspNetCore;
+using Infrastructure.Email;
 using Infrastructure.Photos;
 using Infrastructure.Security;
 using MediatR;
@@ -106,9 +107,13 @@ namespace API
             services.AddMediatR(typeof(List.Handler).Assembly);
             services.AddAutoMapper(typeof(MappingProfiles).Assembly);
             
-            services.AddIdentityCore<AppUser>()
+            services.AddIdentityCore<AppUser>(opt =>
+            {
+                opt.SignIn.RequireConfirmedEmail = true;
+            })
                 .AddEntityFrameworkStores<DataContext>()
-                .AddSignInManager<SignInManager<AppUser>>();
+                .AddSignInManager<SignInManager<AppUser>>()
+                .AddDefaultTokenProviders();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(opt => 
@@ -153,6 +158,7 @@ namespace API
             services.AddScoped<TokenService>();
             services.AddScoped<IUserAccessor, UserAccessor>();
             services.AddScoped<IPhotoAccessor, PhotoAccessor>();
+            services.AddScoped<EmailSender>();
             services.Configure<CloudinarySettings>(Configuration.GetSection("Cloudinary"));
             services.AddSignalR();
         }
