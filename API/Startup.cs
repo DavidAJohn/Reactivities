@@ -106,9 +106,13 @@ namespace API
             services.AddMediatR(typeof(List.Handler).Assembly);
             services.AddAutoMapper(typeof(MappingProfiles).Assembly);
             
-            services.AddIdentityCore<AppUser>()
+            services.AddIdentityCore<AppUser>(opt =>
+            {
+                opt.SignIn.RequireConfirmedEmail = true;
+            })
                 .AddEntityFrameworkStores<DataContext>()
-                .AddSignInManager<SignInManager<AppUser>>();
+                .AddSignInManager<SignInManager<AppUser>>()
+                .AddDefaultTokenProviders();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(opt => 
