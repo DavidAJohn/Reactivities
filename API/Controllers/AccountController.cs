@@ -56,7 +56,7 @@ namespace API.Controllers
                 return CreateUserObject(user);
             }
 
-            return Unauthorized();
+            return Unauthorized("Invalid login details");
         }
 
         [AllowAnonymous]

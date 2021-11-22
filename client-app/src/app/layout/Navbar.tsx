@@ -5,7 +5,7 @@ import { Button, Container, Dropdown, DropdownItem, DropdownMenu, Image, Menu, M
 import { useStore } from '../stores/store';
 
 export const Navbar = observer(() => {
-    const {userStore: {user, logout}} = useStore();
+    const {userStore: {user, logout, isLoggedIn}} = useStore();
 
     return (
         <Menu inverted fixed='top'>
@@ -14,6 +14,8 @@ export const Navbar = observer(() => {
                     <img src="/assets/logo.png" alt="logo" style={{marginRight: '10px'}} />
                     Reactivities
                 </MenuItem>
+                {isLoggedIn &&
+                <>
                 <MenuItem as={NavLink} to='/activities' name='Activities'>
                     Activities
                 </MenuItem>
@@ -32,6 +34,8 @@ export const Navbar = observer(() => {
                         </DropdownMenu>
                     </Dropdown>
                 </MenuItem>
+                </>
+                }
             </Container>
         </Menu>
     )
