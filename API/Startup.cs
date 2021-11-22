@@ -98,6 +98,7 @@ namespace API
                         .AllowAnyHeader()
                         .AllowCredentials()
                         .WithExposedHeaders("WWW-Authenticate", "Pagination")
+                        .SetIsOriginAllowedToAllowWildcardSubdomains()
                         .WithOrigins(Configuration["Cors_Url"]);
                 });
             });
