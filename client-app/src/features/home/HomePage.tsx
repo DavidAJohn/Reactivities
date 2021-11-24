@@ -5,11 +5,17 @@ import { Container, Header, Segment, Image, Button } from 'semantic-ui-react'
 import { useStore } from '../../app/stores/store'
 import LoginForm from '../users/LoginForm'
 import RegisterForm from '../users/RegisterForm'
+import { Helmet } from "react-helmet"
 
 export const HomePage = observer(() => {
     const {userStore, modalStore} = useStore();
 
     return (
+        <>
+        <Helmet>
+            <title>Reactivities</title>
+            <meta name="keywords" content="events, meetups, culture" />
+        </Helmet>
         <Segment inverted textAlign='center' vertical className='masthead'>
             <Container text>
                 <Header as='h1' inverted>
@@ -35,5 +41,6 @@ export const HomePage = observer(() => {
                     )}
             </Container>
         </Segment>
+        </>
     )
 });
